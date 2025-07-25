@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Špaňodolinské granty</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Lora font family */
+        body, h2, h3, p, span, div {
+            font-family: 'Lora', serif;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        /* Grayscale filter for the map tiles */
+        .leaflet-tile-pane {
+            filter: grayscale(100%) opacity(85%);
+        }
+        #info-panel {
+            background-color: #EADDCF; /* Sepia */
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+        }
+        #info-panel.collapsed {
+            transform: translateX(-100%);
+        }
+        #toggle-button {
+            background-color: #EADDCF; /* Sepia */
+            transition: transform 0.3s ease-in-out;
+        }
+        #info-panel.collapsed #toggle-button {
+            transform: translateX(calc(100% + 1rem)) rotate(180deg);
+        }
+        /* Popup gallery styling */
+        .popup-gallery {
+            width: 250px;
+            height: 150px;
+        }
+        .popup-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .popup-gallery-btn {
+            transition: opacity 0.2s ease-in-out;
+        }
+        .popup-gallery-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .leaflet-popup-content {
+            margin: 15px;
+            width: auto !important;
+        }
+        .leaflet-popup-content-wrapper {
+            background-color: #EADDCF; /* Sepia */
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <!-- Collapsible Information Panel -->
+    <div id="info-panel" class="absolute top-0 left-0 h-full md:h-auto md:max-h-[95vh] m-4 w-11/12 max-w-sm p-6 rounded-lg shadow-lg z-[1000] flex flex-col">
+        <div class="flex-grow overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Špaňodolinské granty</h2>
+            <p class="text-gray-700">Objavte históriu a súčasnosť unikátnych vodných zdrojov v okolí Španej Doliny. Tieto historické granty a prírodné toky sú svedkami bohatej baníckej minulosti a dôležitou súčasťou miestnej krajiny. Kliknite na jednotlivé body na mape a dozviete sa viac.</p>
+        </div>
+        <!-- Toggle Button -->
+        <button id="toggle-button" class="absolute top-4 -right-12 text-gray-800 rounded-r-lg p-2 shadow-lg focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <script>
+        // --- DATA FOR WATER SOURCES ---
+        const waterSources = [
+            {
+                id: 100,
+                lat: 48.8046413708777,
+                lng: 19.12642961872907,
+                name: "Grant pod Krásnou horou",
+                description: "Grant pod čerešňou na ceste na Krásnu horu. V 90. rokoch ešte tiekol, ale teraz je suchý",
+                imageUrls: [
+                    "https://placehold.co/600x400/A0522D/ffffff?text=Grant+pod+Krásnou+horou+1",
+                    "https://placehold.co/600x400/A0522D/ffffff?text=Grant+pod+Krásnou+horou+2",
+                ],
+                type: 'grant',
+                status: 'suchý'
+            },
+            {
+                id: 101,
+                lat: 48.80602831320122,
+                lng: 19.12904045096774,
+                name: "Grant v štôlni",
+                description: "Výdatný aj v období sucha, tento grant je častým zdrojom vody na polievanie záhrad keď počasie neumožňuje používanie vodovodu. Grant pramení pod zemou a voda chutí vynikajúco.",
+                imageUrls: [
+                    "https://placehold.co/600x400/007BFF/ffffff?text=Grant+v+štôlni"
+                ],
+                type: 'grant',
+                status: 'pitný'
+            },
+            {
+                id: 102,
+                lat: 48.8079772312271,
+                lng: 19.131395291223466,
+                name: "Grant pri kostole",
+                description: "Grant v zákrute pri kostole je vítaným osviežením pre ľudí stúpajúcich do kopca na Haldu.",
+                imageUrls: [
+                    "https://placehold.co/600x400/28A745/ffffff?text=Grant+pri+kostole"
+                ],
+                type: 'grant',
+                status: 'pitný'
+            },
+            {
+                id: 103,
+                lat: 48.8073566003597, 
+                lng: 19.13519728750489,
+                name: "Denná štôlňa",
+                description: "Z dennej štôlne vychádza prameň s nejasným zdrojom. Donedávna bol pitný, ale v roku 2024 bolo spozorované presakovanie odpadovej vody z chalupy nad ním cez murivo samotnej štôlne. Neodporúča sa piť dokým jeho čistotu nepreveria testy.",
+                imageUrls: [
+                    "https://placehold.co/600x400/A0522D/ffffff?text=Denná+štôlňa",
+                    "https://placehold.co/600x400/A0522D/ffffff?text=Denná+štôlňa+2"
+                ],
+                type: 'grant',
+                status: 'nepitný'
+            }
+        ];
+
+        // --- CUSTOM MARKER ICONS ---
+        function createMarkerIcon(shape, color) {
+            const shapes = {
+                grant: 'M4 20 C4 30, 28 30, 28 20 Z',
+                flow: 'M6 13 C 10 9, 14 17, 16 13 C 20 9, 22 17, 26 13 L26 19 C 22 23, 20 15, 16 19 C 14 23, 10 15, 6 19 Z'
+            };
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="marker"><path fill-opacity="0.9" stroke="#000" stroke-width="1.5" stroke-opacity="0.7" fill="${color}" d="${shapes[shape]}"/></svg>`;
+            const anchor = shape === 'grant' ? [16, 30] : [16, 32];
+            return L.icon({
+                iconUrl: 'data:image/svg+xml;base64,' + btoa(svgIcon),
+                iconSize: [32, 32],
+                iconAnchor: anchor,
+                popupAnchor: [0, -25],
+            });
+        }
+
+        // --- SLOVAK TRANSLATIONS AND STYLES ---
+        const statusColors = { pitný: '#007BFF', nepitný: '#28A745', suchý: '#A0522D' };
+        const statusTranslations = { pitný: 'Pitný', nepitný: 'Nepitný', suchý: 'Suchý' };
+        const statusStyles = {
+            pitný: 'text-blue-800 bg-blue-100 border border-blue-300',
+            nepitný: 'text-green-800 bg-green-100 border border-green-300',
+            suchý: 'text-yellow-800 bg-yellow-100 border border-yellow-400'
+        };
+
+        // --- MAP INITIALIZATION ---
+        const map = L.map('map', {
+            zoomControl: false // Disable default zoom control
+        }).setView([48.8046, 19.1264], 13);
+
+        // Add zoom control to the top right
+        L.control.zoom({ position: 'topright' }).addTo(map);
+        
+        L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
+            maxZoom: 19,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Map style &copy; <a href="https://www.freemap.sk">Freemap Slovakia</a>'
+        }).addTo(map);
+
+        // --- COLLAPSIBLE PANEL LOGIC ---
+        const infoPanel = document.getElementById('info-panel');
+        const toggleButton = document.getElementById('toggle-button');
+        toggleButton.addEventListener('click', () => {
+            infoPanel.classList.toggle('collapsed');
+        });
+
+        // --- MARKER CREATION ---
+        waterSources.forEach((source, index) => {
+            const icon = createMarkerIcon(source.type, statusColors[source.status]);
+            const marker = L.marker([source.lat, source.lng], { icon: icon }).addTo(map);
+
+            // Create content for the popup
+            const typeBadgeText = source.type === 'grant' ? 'Grant' : 'Tok';
+            const statusBadgeText = statusTranslations[source.status];
+            const statusBadgeStyle = statusStyles[source.status];
+
+            const popupContent = `
+                <div class="w-[250px]">
+                    <h3 class="text-lg font-bold mb-2">${source.name}</h3>
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200 text-gray-700">${typeBadgeText}</span>
+                        <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${statusBadgeStyle}">${statusBadgeText}</span>
+                    </div>
+                    <div id="gallery-${index}" class="popup-gallery relative w-full h-[150px] group mb-3">
+                        <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image w-full h-full object-cover rounded-lg shadow-md">
+                        <button class="prev-image-btn popup-gallery-btn absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&lt;</button>
+                        <button class="next-image-btn popup-gallery-btn absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&gt;</button>
+                    </div>
+                    <p class="text-sm text-gray-700">${source.description}</p>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+        });
+
+        // --- POPUP AND PANEL INTERACTION LOGIC ---
+        map.on('popupopen', function(e) {
+            // --- Auto-collapse panel logic ---
+            if (!infoPanel.classList.contains('collapsed')) {
+                const panelRect = infoPanel.getBoundingClientRect();
+                const popupRect = e.popup.getElement().getBoundingClientRect();
+                // Check if the right side of the popup overlaps with the panel
+                if (popupRect.right > panelRect.left && popupRect.left < panelRect.right) {
+                     infoPanel.classList.add('collapsed');
+                }
+            }
+
+            // --- Gallery logic ---
+            const popupNode = e.popup.getElement();
+            const sourceName = popupNode.querySelector('h3').textContent;
+            const source = waterSources.find(s => s.name === sourceName);
+            
+            if (!source || source.imageUrls.length <= 1) return;
+
+            let currentIndex = 0;
+            const images = source.imageUrls;
+            const imgElement = popupNode.querySelector('.site-image');
+            const prevButton = popupNode.querySelector('.prev-image-btn');
+            const nextButton = popupNode.querySelector('.next-image-btn');
+            const gallery = popupNode.querySelector('.popup-gallery');
+
+            function updateGalleryView() {
+                imgElement.src = images[currentIndex];
+                imgElement.alt = `Fotka ${currentIndex + 1} z ${source.name}`;
+                prevButton.disabled = currentIndex === 0;
+                nextButton.disabled = currentIndex === images.length - 1;
+                prevButton.style.display = images.length > 1 ? 'block' : 'none';
+                nextButton.style.display = images.length > 1 ? 'block' : 'none';
+            }
+
+            prevButton.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateGalleryView();
+                }
+            });
+
+            nextButton.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                if (currentIndex < images.length - 1) {
+                    currentIndex++;
+                    updateGalleryView();
+                }
+            });
+            
+            gallery.addEventListener('wheel', (event) => {
+                event.preventDefault();
+                if (event.deltaY < 0) {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateGalleryView();
+                    }
+                } else {
+                    if (currentIndex < images.length - 1) {
+                        currentIndex++;
+                        updateGalleryView();
+                    }
+                }
+            }, { passive: false });
+
+            updateGalleryView();
+        });
+
+    </script>
+</body>
+</html>
