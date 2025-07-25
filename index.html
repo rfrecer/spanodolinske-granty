@@ -154,16 +154,9 @@
         // Use the reliable tile layer from Freemap.sk
         L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
             maxZoom: 19,
-            minZoom: 13, // Prevent zooming out too far
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Map style &copy; <a href="https://www.freemap.sk">Freemap Slovakia</a>'
         }).addTo(map);
 
-        // Set boundaries to keep the user focused on the Špania Dolina area
-        const southWest = L.latLng(48.79, 19.11);
-        const northEast = L.latLng(48.82, 19.15);
-        const bounds = L.latLngBounds(southWest, northEast);
-        map.setMaxBounds(bounds);
-        
         // --- CUSTOM MARKER ICONS ---
         function createMarkerIcon(shape, color) {
             const shapes = {
