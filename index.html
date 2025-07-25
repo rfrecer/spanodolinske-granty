@@ -95,7 +95,7 @@
                 name: "Grant pod Krásnou horou",
                 description: "Grant pod čerešňou na ceste na Krásnu horu. V 90. rokoch ešte tiekol, ale teraz je suchý",
                 imageUrls: [
-                    "https://github.com/rfrecer/spanodolinske-granty/assets/granty/100.png"
+                    "images/100 pod krasnou horou/100.png"
                 ],
                 type: 'grant',
                 status: 'suchý'
@@ -139,6 +139,31 @@
             }
         ];
 
+        // --- MAP INITIALIZATION ---
+        const map = L.map('map', {
+            zoomControl: false // Disable default zoom control
+        }).setView([48.8065, 19.13], 15); // Centered view
+
+        // Add zoom control to the top right
+        L.control.zoom({ position: 'topright' }).addTo(map);
+        
+        // Use the reliable tile layer from Freemap.sk
+        L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
+            maxZoom: 19,
+            minZoom: 13, // Prevent zooming out too far
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Map style &copy; <a href="https://www.freemap.sk">Freemap Slovakia</a>'
+        }).addTo(map);
+
+        // Set boundaries to keep the user focused on the Špania Dolina area
+        const southWest = L.latLng(48.79, 19.11);
+        const northEast = L.latLng(48.82, 19.15);
+        const bounds = L.latLngBounds(southWest, northEast);
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
+        });
+
+
         // --- CUSTOM MARKER ICONS ---
         function createMarkerIcon(shape, color) {
             const shapes = {
@@ -164,19 +189,6 @@
             suchý: 'text-yellow-800 bg-yellow-100 border border-yellow-400'
         };
 
-        // --- MAP INITIALIZATION ---
-        const map = L.map('map', {
-            zoomControl: false // Disable default zoom control
-        }).setView([48.8046, 19.1264], 13);
-
-        // Add zoom control to the top right
-        L.control.zoom({ position: 'topright' }).addTo(map);
-        
-        L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
-            maxZoom: 19,
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Map style &copy; <a href="https://www.freemap.sk">Freemap Slovakia</a>'
-        }).addTo(map);
-
         // --- COLLAPSIBLE PANEL LOGIC ---
         const infoPanel = document.getElementById('info-panel');
         const toggleButton = document.getElementById('toggle-button');
@@ -185,11 +197,10 @@
         });
 
         // --- MARKER CREATION ---
-        waterSources.forEach((source, index) => {
+        waterSources.forEach((source) => {
             const icon = createMarkerIcon(source.type, statusColors[source.status]);
             const marker = L.marker([source.lat, source.lng], { icon: icon }).addTo(map);
 
-            // Create content for the popup
             const typeBadgeText = source.type === 'grant' ? 'Grant' : 'Tok';
             const statusBadgeText = statusTranslations[source.status];
             const statusBadgeStyle = statusStyles[source.status];
@@ -201,7 +212,7 @@
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200 text-gray-700">${typeBadgeText}</span>
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${statusBadgeStyle}">${statusBadgeText}</span>
                     </div>
-                    <div id="gallery-${index}" class="popup-gallery relative w-full h-[150px] group mb-3">
+                    <div id="gallery-${source.id}" class="popup-gallery relative w-full h-[150px] group mb-3">
                         <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image w-full h-full object-cover rounded-lg shadow-md">
                         <button class="prev-image-btn popup-gallery-btn absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&lt;</button>
                         <button class="next-image-btn popup-gallery-btn absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&gt;</button>
@@ -214,17 +225,14 @@
 
         // --- POPUP AND PANEL INTERACTION LOGIC ---
         map.on('popupopen', function(e) {
-            // --- Auto-collapse panel logic ---
             if (!infoPanel.classList.contains('collapsed')) {
                 const panelRect = infoPanel.getBoundingClientRect();
                 const popupRect = e.popup.getElement().getBoundingClientRect();
-                // Check if the right side of the popup overlaps with the panel
                 if (popupRect.right > panelRect.left && popupRect.left < panelRect.right) {
                      infoPanel.classList.add('collapsed');
                 }
             }
 
-            // --- Gallery logic ---
             const popupNode = e.popup.getElement();
             const sourceName = popupNode.querySelector('h3').textContent;
             const source = waterSources.find(s => s.name === sourceName);
