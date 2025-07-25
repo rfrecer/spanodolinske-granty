@@ -41,15 +41,14 @@
         /* Popup gallery styling */
         .popup-gallery {
             width: 250px;
-            /* Container is a simple block element now */
         }
         .popup-gallery img {
-            /* Image scales naturally, preserving aspect ratio */
-            max-width: 100%;
-            max-height: 250px; /* Set max-height on the image itself */
-            width: auto;
-            height: auto;
+            /* Image now fills width, height adjusts automatically */
+            width: 100%;
+            height: auto; 
+            max-height: 300px; /* Prevent excessively tall images */
             border-radius: 0.5rem;
+            object-fit: cover; /* Ensures image covers the area, good for consistency */
         }
         .popup-gallery-btn {
             transition: opacity 0.2s ease-in-out;
@@ -164,11 +163,7 @@
         const northEast = L.latLng(48.82, 19.15);
         const bounds = L.latLngBounds(southWest, northEast);
         map.setMaxBounds(bounds);
-        map.on('drag', function() {
-            map.panInsideBounds(bounds, { animate: false });
-        });
-
-
+        
         // --- CUSTOM MARKER ICONS ---
         function createMarkerIcon(shape, color) {
             const shapes = {
@@ -210,7 +205,6 @@
             const statusBadgeText = statusTranslations[source.status];
             const statusBadgeStyle = statusStyles[source.status];
 
-            // Added mb-3 to the image to ensure space between it and the description
             const popupContent = `
                 <div class="w-[250px]">
                     <h3 class="text-lg font-bold mb-2">${source.name}</h3>
@@ -218,15 +212,16 @@
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200 text-gray-700">${typeBadgeText}</span>
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${statusBadgeStyle}">${statusBadgeText}</span>
                     </div>
-                    <div id="gallery-${source.id}" class="popup-gallery relative group">
-                        <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image shadow-md mb-3">
+                    <div id="gallery-${source.id}" class="popup-gallery relative group mb-3">
+                        <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image shadow-md">
                         <button class="prev-image-btn popup-gallery-btn absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&lt;</button>
                         <button class="next-image-btn popup-gallery-btn absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&gt;</button>
                     </div>
                     <p class="text-sm text-gray-700">${source.description}</p>
                 </div>
             `;
-            marker.bindPopup(popupContent);
+            // Add autoPanPadding to give Leaflet more room to pan the popup into view
+            marker.bindPopup(popupContent, { autoPanPadding: L.point(80, 80) });
         });
 
         // --- POPUP AND PANEL INTERACTION LOGIC ---
