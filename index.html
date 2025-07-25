@@ -41,12 +41,19 @@
         /* Popup gallery styling */
         .popup-gallery {
             width: 250px;
-            height: 150px;
+            /* Let height be flexible, but set a max */
+            max-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .popup-gallery img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            /* Let the image scale naturally within the container */
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* This is key: fits the whole image without cropping */
             border-radius: 0.5rem;
         }
         .popup-gallery-btn {
@@ -208,6 +215,7 @@
             const statusBadgeText = statusTranslations[source.status];
             const statusBadgeStyle = statusStyles[source.status];
 
+            // Note the changes to the gallery and image tags: removed fixed height and cover classes
             const popupContent = `
                 <div class="w-[250px]">
                     <h3 class="text-lg font-bold mb-2">${source.name}</h3>
@@ -215,8 +223,8 @@
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200 text-gray-700">${typeBadgeText}</span>
                         <span class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${statusBadgeStyle}">${statusBadgeText}</span>
                     </div>
-                    <div id="gallery-${source.id}" class="popup-gallery relative w-full h-[150px] group mb-3">
-                        <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image w-full h-full object-cover rounded-lg shadow-md">
+                    <div id="gallery-${source.id}" class="popup-gallery relative group mb-3">
+                        <img src="${source.imageUrls[0]}" alt="Fotka 1 z ${source.name}" class="site-image shadow-md">
                         <button class="prev-image-btn popup-gallery-btn absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&lt;</button>
                         <button class="next-image-btn popup-gallery-btn absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white rounded-full p-1 hidden group-hover:block focus:outline-none">&gt;</button>
                     </div>
