@@ -66,10 +66,6 @@
             border-radius: 12px;
         }
         /* Custom control button styling */
-        .leaflet-control-custom {
-            border-radius: 4px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-        }
         .leaflet-control-custom svg {
             color: #333;
         }
@@ -156,29 +152,28 @@
             zoomControl: false // Disable default zoom control
         }).setView([48.8065, 19.13], 15); // Centered view
 
-        // Add zoom control to the top right
-        L.control.zoom({ position: 'topright' }).addTo(map);
+        // Add zoom control to the bottom right
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
         
         // --- CUSTOM CENTER CONTROL ---
         L.Control.Center = L.Control.extend({
             onAdd: function(map) {
-                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-                container.style.backgroundColor = 'white';
-                container.style.width = '30px';
-                container.style.height = '30px';
-                container.style.cursor = 'pointer';
-                container.style.display = 'flex';
-                container.style.alignItems = 'center';
-                container.style.justifyContent = 'center';
-                container.title = 'Center Map';
-                container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style="width: 22px; height: 22px;"><path d="M16 4 A12 12 0 0 0 4 16 A12 12 0 0 0 16 28 A12 12 0 0 0 28 16 A12 12 0 0 0 16 4 z M 16 8 A8 8 0 0 1 24 16 A8 8 0 0 1 16 24 A8 8 0 0 1 8 16 A8 8 0 0 1 16 8 z" /><circle cx="16" cy="16" r="2"/></svg>';
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const button = L.DomUtil.create('a', 'leaflet-control-custom', container);
+                button.href = '#';
+                button.role = 'button';
+                button.style.width = '30px';
+                button.style.height = '30px';
+                button.style.display = 'flex';
+                button.style.alignItems = 'center';
+                button.style.justifyContent = 'center';
+                button.title = 'Center Map';
+                button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style="width: 22px; height: 22px;"><path d="M16 4 A12 12 0 0 0 4 16 A12 12 0 0 0 16 28 A12 12 0 0 0 28 16 A12 12 0 0 0 16 4 z M 16 8 A8 8 0 0 1 24 16 A8 8 0 0 1 16 24 A8 8 0 0 1 8 16 A8 8 0 0 1 16 8 z" /><circle cx="16" cy="16" r="2"/></svg>';
 
-                container.onclick = function(){
+                L.DomEvent.on(button, 'click', L.DomEvent.stop);
+                L.DomEvent.on(button, 'click', function(){
                     map.setView([48.8065, 19.13], 15);
-                }
-
-                // Prevent map clicks when clicking the button
-                L.DomEvent.disableClickPropagation(container);
+                });
 
                 return container;
             }
@@ -188,7 +183,7 @@
             return new L.Control.Center(opts);
         }
 
-        L.control.center({ position: 'topright' }).addTo(map);
+        L.control.center({ position: 'bottomright' }).addTo(map);
 
         // Use the reliable tile layer from Freemap.sk
         L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
