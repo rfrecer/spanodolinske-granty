@@ -244,10 +244,10 @@
                 id: 502, lat: 48.81157118812032, lng: 19.129046440784304, name: "Banský vodovod 3", description: "Priehlbiny na okraji cesty, v ktorých je stále viditeľné koryto banského vodovodu vystlané kameňmi. Sú tu dobre zachované tri bridlicové prikrývacie kamene za sebou.", imageUrls: ["images/502 vrstevnica/IMG_0100.png", "images/502 vrstevnica/IMG_0102.png", "images/502 vrstevnica/IMG_0103.png"], type: 'tok', status: 'suchý'
             },
             {
-                id: 503, lat: 48.812951006846646, lng: 19.133277664587368, name: "Banský vodovod 4", description: "Koryto banského vodovodu je pod zemou miestami zachovalé, že ho využívajú zvieratá ako nory.", imageUrls: ["images/503 vrstevnica nora/IMG_0112.png"], type: 'tok', status: 'suchý'
+                id: 503, lat: 48.812821006846646, lng: 19.133277664587368, name: "Banský vodovod 4", description: "Koryto banského vodovodu je pod zemou miestami zachovalé, že ho využívajú zvieratá ako nory.", imageUrls: ["images/503 vrstevnica nora/IMG_0112.png"], type: 'tok', status: 'suchý'
             },
             {
-                id: 504, lat: 48.813412527196476, lng: 19.134217725177674, name: "Banský vodovod 5", description: "Miestami je koryto tak zasypané, že vykukje len málo.", imageUrls: ["images/504 vrstevnica/IMG_0114.png", "images/504 vrstevnica/IMG_0116.png"], type: 'tok', status: 'suchý'
+                id: 504, lat: 48.813412527196476, lng: 19.134307725177674, name: "Banský vodovod 5", description: "Miestami je koryto tak zasypané, že vykukje len málo.", imageUrls: ["images/504 vrstevnica/IMG_0114.png", "images/504 vrstevnica/IMG_0116.png"], type: 'tok', status: 'suchý'
             },
             {
                 id: 505, lat: 0, lng: 0, name: "Nový tok 6", description: "", imageUrls: [], type: 'tok', status: 'pitný'
@@ -314,7 +314,7 @@
         function createMarkerIcon(shape, color) {
             const shapes = {
                 grant: 'M4 20 C4 30, 28 30, 28 20 Z',
-                flow: 'M6 13 C 10 9, 14 17, 16 13 C 20 9, 22 17, 26 13 L26 19 C 22 23, 20 15, 16 19 C 14 23, 10 15, 6 19 Z'
+                tok: 'M6 13 C 10 9, 14 17, 16 13 C 20 9, 22 17, 26 13 L26 19 C 22 23, 20 15, 16 19 C 14 23, 10 15, 6 19 Z'
             };
             const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="marker"><path fill-opacity="0.9" stroke="#000" stroke-width="1.5" stroke-opacity="0.7" fill="${color}" d="${shapes[shape]}"/></svg>`;
             const anchor = shape === 'grant' ? [16, 30] : [16, 32];
@@ -344,6 +344,11 @@
 
         // --- MARKER CREATION ---
         waterSources.forEach((source) => {
+            // Skip sources with placeholder coordinates
+            if (source.lat === 0 && source.lng === 0) {
+                return;
+            }
+
             const icon = createMarkerIcon(source.type, statusColors[source.status]);
             const marker = L.marker([source.lat, source.lng], { icon: icon }).addTo(map);
 
