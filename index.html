@@ -78,7 +78,7 @@
     <div id="info-panel" class="absolute top-0 left-0 m-4 w-[calc(100vw-80px)] sm:w-11/12 max-w-sm h-auto max-h-[95vh] bg-white p-6 rounded-lg shadow-lg z-[1000] flex flex-col">
         <div class="flex-grow overflow-y-auto">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Špaňodolinské granty</h2>
-            <p class="text-gray-700">Objavte históriu a súčasnosť unikátnych vodných zdrojov v okolí Španej Doliny. Tieto historické granty a prírodné toky sú svedkami bohatej baníckej minulosti a dôležitou súčasťou miestnej krajiny. Kliknite na jednotlivé body na mape a dozviete sa viac.</p>
+            <p class="text-gray-700">Objav unikátne vodné zdroje v okolí Španej Doliny, miestnymi nazývané aj granty. Tieto prírodné toky svedčia o bohatej baníckej minulosti a sú dôležitou súčasťou miestnej krajiny. Klikni na jednotlivé body na mape a dozvieš sa viac.</p>
         </div>
         <!-- Toggle Button -->
         <button id="toggle-button" class="absolute top-4 -right-12 text-gray-800 rounded-r-lg p-2 shadow-lg focus:outline-none">
@@ -99,7 +99,7 @@
                 lat: 48.8046413708777,
                 lng: 19.12642961872907,
                 name: "Grant pod Krásnou horou",
-                description: "Grant pod čerešňou na ceste na Krásnu horu. V 90. rokoch ešte tiekol, ale teraz je suchý",
+                description: "Grant pod čerešňou na ceste na Krásnu horu. V roku 2021 ešte tiekol, ale teraz je suchý",
                 imageUrls: [
                     "images/100 pod krasnou horou/100.png"
                 ],
@@ -138,7 +138,7 @@
                 lat: 48.807314215009555,  
                 lng: 19.13519788114444,
                 name: "Denná štôlňa",
-                description: "Z dennej štôlne vychádza prameň s nejasným zdrojom. Donedávna bol pitný, ale v roku 2024 bolo spozorované presakovanie odpadovej vody z chalupy nad ním cez murivo samotnej štôlne. Neodporúča sa piť dokým jeho čistotu nepreveria testy.",
+                description: "Z dennej štôlne vychádza prameň s nejasným zdrojom. Donedávna bol pitný, ale v roku 2024 bolo spozorované presakovanie odpadovej vody z chalupy nad ním cez murivo samotnej štôlne. Neodporúča sa preto piť.",
                 imageUrls: [
                     "images/103 denna stolna/IMG_0481.png",
                     "images/103 denna stolna/IMG_0483.png", 
@@ -165,7 +165,7 @@
                 lat: 48.806844349494824, 
                 lng: 19.13619835814387,
                 name: "Zaniknutý grant",
-                description: "Tento grant už neexistuje a jeho tok je suchý. Zostali po ňom len kamenné múry zasadené do svahu, ktoré ho chránili.",
+                description: "Tento grant už neexistuje a jeho tok je suchý. Zostali po ňom len kamenné múry zasadené do svahu.",
                 imageUrls: [
                     "images/105/IMG_0488.png"
                 ],
@@ -234,7 +234,21 @@
                 type: 'grant',
                 status: 'nepitný'
             },
-            // --- New Flow Placeholders ---
+            {
+                id: 111, 
+                lat: 0, 
+                lng: 0, 
+                name: "Dobrá voda", 
+                description: "Testy v roku 2016 potvrdili, že voda v grante Dobrá voda je pitná. Tento prameň sa nachádza na polceste medzi Špaňou Dolinou a Šachtičkami.", 
+                imageUrls: [
+                    "images/111 dobra voda/IMG_0591.png", 
+                    "images/111 dobra voda/IMG_0593.png",
+                    "images/111 dobra voda/IMG_0594.png"
+                ], 
+                type: 'grant', 
+                status: 'pitný'
+            },
+            // --- Flow Placeholders ---
             {
                 id: 500, lat: 48.81218888112165, lng: 19.128767529422998, name: "Banský vodovod 1", description: "Veľké bridlicové kamene, ktorými bol tok banského vodovodu prikrytý.", imageUrls: ["images/500 vrstevnica/IMG_0090.png"], type: 'tok', status: 'suchý'
             },
@@ -263,16 +277,37 @@
                 id: 508, lat: 48.807802, lng: 19.131493, name: "Pri kostole", description: "Nepatrné zvyšky suchého toku v zákrute pri kostole. Podľa Vlada Bíreša tu kedysi stával grant.", imageUrls: ["images/508 pri kostole/IMG_0499.png"], type: 'tok', status: 'suchý'
             },
             {
-                id: 509, lat: 48.80759, lng: 19.130303, name: "V rýničke", description: "Podľa mapy tento tok môže prameniť spod haldy šachty Ludovika, teda vynáša odpadovú vodu použitú v baniach podobne ako prameň pri Tajchu pod haldou šachty Maximilián.", imageUrls: ["images/509 v rynicke/IMG_0503.png"], type: 'tok', status: 'nepitný'
+                id: 509, lat: 48.80759, lng: 19.130303, name: "V rýničke", description: "Podľa mapy tento tok môže prameniť spod haldy šachty Ludovika - vynáša teda odpadovú vodu použitú v baniach, podobne ako prameň pri Tajchu pod haldou šachty Maximilián.", imageUrls: ["images/509 v rynicke/IMG_0503.png"], type: 'tok', status: 'nepitný'
             }, 
             {
                 id: 510, lat: 48.805083, lng: 19.12724, name: "Nad Daubnerom", description: "Nejasný tok zo svahu.", imageUrls: ["images/510 nad daubnerom/IMG_0504.png"], type: 'tok', status: 'nepitný'
             }, 
              {
-                id: 511, lat: 48.80870, lng: 19.13321, name: "Tajch", description: "Prameň spod haldy prepúšťal užitú vodu zo šácht Maximilián a Ludovika, aby ďalej slúžila na pohon banskych strojov na Pľaci.", imageUrls: ["images/511 tajch/IMG_0537.png", "images/511 tajch/IMG_0538.png", "images/511 tajch/IMG_0540.png"], type: 'tok', status: 'nepitný'
+                id: 511, lat: 48.80870, lng: 19.13321, name: "Tajch", description: "Prameň spod haldy prepúšťal užitú vodu zo šácht Maximilián a Ludovika, aby ďalej slúžila na pohon banských strojov na Pľaci.", imageUrls: ["images/511 tajch/IMG_0537.png", "images/511 tajch/IMG_0538.png", "images/511 tajch/IMG_0540.png"], type: 'tok', status: 'nepitný'
             },
              {
                 id: 512, lat: 48.80824, lng: 19.13344, name: "Pod tajchom", description: "Upravený tok vody s hlbokým murovaným korytom.", imageUrls: ["images/512 pod tajchom/IMG_0543.png", "images/512 pod tajchom/IMG_0544.png", "images/512 pod tajchom/IMG_0545.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 513, lat: 48.80663, lng: 19.13976, name: "Dobrá voda 2", description: "Pri posledných domoch v dedine tečie Dobrá voda divokým korytom. Nie je vylúčené, že do toku tečie odpadová voda.", imageUrls: ["images/513 dobra voda 2/IMG_0580.png", "images/513 dobra voda 2/IMG_0581.png", "images/513 dobra voda 2/IMG_0582.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 514, lat: 48.80588, lng: 19.14023, name: "Dobrá voda 3", description: "Za poslednými domami do Dobrej vody priteká ďalší lesný potok z juhovýchodnej strany lesa. Koryto je rozvetvené a vytvára brázdy.", imageUrls: ["images/514 dobra voda 3/IMG_0584.png", "images/514 dobra voda 3/IMG_0585.png", "images/514 dobra voda 3/IMG_0586.png", "images/514 dobra voda 3/IMG_0587.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 515, lat: 48.80526, lng: 19.13911, name: "Mláky v lese", description: "Na tomto mieste v lese sa držia mláky, v roku 2024 tu bolo aj malé jazierko. Mohol by to byť zaniknutý tajch.", imageUrls: ["images/515 v lese/IMG_0589.png", "images/515 v lese/IMG_0590.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 516, lat: 48.80392, lng: 19.14196, name: "Pri Dobrej vode", description: "Na križovatke toku Dobrej vody a lesnej vrstevnice pokračuje tok popri ceste v brázde.", imageUrls: ["images/516 pri dobrej vode/IMG_0595.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 517, lat: 48.80537, lng: 19.14379, name: "V zákrute", description: "V zákrute na vrstevnici tečie zhora z lesa voda upravenou rúrou popod cestu.", imageUrls: ["images/517 v zakrute/IMG_0596.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 518, lat: 48.81120, lng: 19.14360, name: "Za zákrutou", description: "Za zákrutou na vrstevnici sa drží stojatá voda. Tok popri vrstevnici tu končí a vylieva sa dole smerom do dediny.", imageUrls: ["images/518 za zakrutou/IMG_0598.png"], type: 'tok', status: 'nepitný'
+            },
+            {
+                id: 519, lat: 48.81020, lng: 19.13991, name: "Štôlňa Mann", description: "V štôlni Mann stojí voda a prilieva sa do toku Fajtlovej. Okolie je plné mravenísk.", imageUrls: ["images/519 mann fajtlova/IMG_0600.png", "images/519 mann fajtlova/IMG_0601.png", "images/519 mann fajtlova/IMG_0602.png"], type: 'tok', status: 'nepitný'
             }
         ];
 
