@@ -78,7 +78,7 @@
     <div id="info-panel" class="absolute top-0 left-0 m-4 w-[calc(100vw-80px)] sm:w-11/12 max-w-sm h-auto max-h-[95vh] bg-white p-6 rounded-lg shadow-lg z-[1000] flex flex-col">
         <div class="flex-grow overflow-y-auto">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Špaňodolinské granty</h2>
-            <p class="text-gray-700">Objav unikátne vodné zdroje v okolí Španej Doliny, miestnymi nazývané aj granty. Tieto prírodné toky svedčia o bohatej baníckej minulosti a sú dôležitou súčasťou miestnej krajiny. Klikni na jednotlivé body na mape a dozvieš sa viac.</p>
+            <p class="text-gray-700">Granty sú unikátne vodné zdroje na Španej Doline a v okolí. Tieto sčasti prírodne a sčasti človekom vytvorené toky prinášali pitnú a úžitkovú vodu nielen do baní, ale aj celej obci. Kvôli chýbajúcej údržbe však vysýchajú alebo sa stávajú nepitnými. Klikni na jednotlivé body na mape a dozvieš sa viac.</p>
         </div>
         <!-- Toggle Button -->
         <button id="toggle-button" class="absolute top-4 -right-12 text-gray-800 rounded-r-lg p-2 shadow-lg focus:outline-none">
@@ -236,8 +236,8 @@
             },
             {
                 id: 111, 
-                lat: 48.80365,  
-                lng: 19.14140, 
+                lat: 48.803695,  
+                lng: 19.141332,
                 name: "Dobrá voda", 
                 description: "Testy v roku 2016 potvrdili, že voda v grante Dobrá voda je pitná. Tento prameň sa nachádza na polceste medzi Špaňou Dolinou a Šachtičkami.", 
                 imageUrls: [
@@ -247,6 +247,9 @@
                 ], 
                 type: 'grant', 
                 status: 'pitný'
+            },
+            {
+                id: 112, lat: 0, lng: 0, name: "Nový grant 2", description: "", imageUrls: [], type: 'grant', status: 'pitný'
             },
             // --- Flow Placeholders ---
             {
@@ -271,7 +274,7 @@
                 id: 506, lat: 48.80739, lng: 19.13889, name: "Fajtlová 1", description: "Posledný úsek toku Fajtlová pred napojením na Dobrú vodu. Upravené koryto murovanými kameňmi pomedzi záhrady.", imageUrls: ["images/506 fajtlova 1/IMG_0494.png"], type: 'tok', status: 'nepitný'
             },
             {
-                id: 507, lat: 48.8072, lng: 19.138945, name: "Dobrá voda 1", description: "Posledný úsek toku Dobrá voda pred napojením na Fajtlovú je vedený novými podzemnými rúrami. Kvôli domom nad ním je pravdepodobne nepitný.", imageUrls: ["images/507 dobra voda 1/IMG_0495.png", "images/507 dobra voda 1/IMG_0497.png", "images/507 dobra voda 1/IMG_0498.png"], type: 'tok', status: 'nepitný'
+                id: 507, lat: 48.80721, lng: 19.13899, name: "Dobrá voda 1", description: "Posledný úsek toku Dobrá voda pred napojením na Fajtlovú je vedený novými podzemnými rúrami. Kvôli domom nad ním je pravdepodobne nepitný.", imageUrls: ["images/507 dobra voda 1/IMG_0495.png", "images/507 dobra voda 1/IMG_0497.png", "images/507 dobra voda 1/IMG_0498.png"], type: 'tok', status: 'nepitný'
             },
             {
                 id: 508, lat: 48.807802, lng: 19.131493, name: "Pri kostole", description: "Nepatrné zvyšky suchého toku v zákrute pri kostole. Podľa Vlada Bíreša tu kedysi stával grant.", imageUrls: ["images/508 pri kostole/IMG_0499.png"], type: 'tok', status: 'suchý'
@@ -283,7 +286,7 @@
                 id: 510, lat: 48.805083, lng: 19.12724, name: "Nad Daubnerom", description: "Nejasný tok zo svahu.", imageUrls: ["images/510 nad daubnerom/IMG_0504.png"], type: 'tok', status: 'nepitný'
             }, 
              {
-                id: 511, lat: 48.80870, lng: 19.13321, name: "Tajch", description: "Prameň spod haldy prepúšťal užitú vodu zo šácht Maximilián a Ludovika, aby ďalej slúžila na pohon banských strojov na Pľaci.", imageUrls: ["images/511 tajch/IMG_0537.png", "images/511 tajch/IMG_0538.png", "images/511 tajch/IMG_0540.png"], type: 'tok', status: 'nepitný'
+                id: 511, lat: 48.80870, lng: 19.13321, name: "Tajch", description: "Prameň spod haldy prepúšťal užitú vodu zo šácht Maximilián a Ludovika, aby ďalej slúžila na pohon banskych strojov na Pľaci.", imageUrls: ["images/511 tajch/IMG_0537.png", "images/511 tajch/IMG_0538.png", "images/511 tajch/IMG_0540.png"], type: 'tok', status: 'nepitný'
             },
              {
                 id: 512, lat: 48.80824, lng: 19.13344, name: "Pod tajchom", description: "Upravený tok vody s hlbokým murovaným korytom.", imageUrls: ["images/512 pod tajchom/IMG_0543.png", "images/512 pod tajchom/IMG_0544.png", "images/512 pod tajchom/IMG_0545.png"], type: 'tok', status: 'nepitný'
@@ -301,7 +304,7 @@
                 id: 516, lat: 48.80392, lng: 19.14196, name: "Pri Dobrej vode", description: "Na križovatke toku Dobrej vody a lesnej vrstevnice pokračuje tok popri ceste v brázde.", imageUrls: ["images/516 pri dobrej vode/IMG_0595.png"], type: 'tok', status: 'nepitný'
             },
             {
-                id: 517, lat: 48.80537, lng: 19.14379, name: "V zákrute", description: "V zákrute na vrstevnici tečie zhora z lesa voda upravenou rúrou popod cestu.", imageUrls: ["images/517 v zakrute/IMG_0596.png"], type: 'tok', status: 'nepitný'
+                id: 517, lat: 48.805352, lng: 19.143722, name: "V zákrute", description: "V zákrute na vrstevnici tečie zhora z lesa voda upravenou rúrou popod cestu.", imageUrls: ["images/517 v zakrute/IMG_0596.png"], type: 'tok', status: 'nepitný'
             },
             {
                 id: 518, lat: 48.81120, lng: 19.14360, name: "Za zákrutou", description: "Za zákrutou na vrstevnici sa drží stojatá voda. Tok popri vrstevnici tu končí a vylieva sa dole smerom do dediny.", imageUrls: ["images/518 za zakrutou/IMG_0598.png"], type: 'tok', status: 'nepitný'
