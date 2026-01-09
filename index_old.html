@@ -28,7 +28,6 @@
             background-color: #EADDCF; /* Sepia */
             transition: transform 0.3s ease-in-out;
             transform: translateX(0);
-            z-index: 1000;
         }
         #info-panel.collapsed {
             transform: translateX(-100%);
@@ -36,7 +35,6 @@
         #toggle-button {
             background-color: #EADDCF; /* Sepia */
             transition: transform 0.3s ease-in-out;
-            pointer-events: auto;
         }
         #info-panel.collapsed #toggle-button {
             transform: translateX(calc(100% + 1rem)) rotate(180deg);
@@ -44,19 +42,17 @@
         /* Popup gallery styling */
         .popup-gallery {
             width: 250px;
-            position: relative;
         }
         .popup-gallery img {
             /* Image now fills width, height adjusts automatically */
             width: 100%;
-            height: 200px; /* Fixed height for consistency in popup */
-            object-fit: cover; 
+            height: auto; 
+            max-height: 300px; /* Prevent excessively tall images */
             border-radius: 0.5rem;
-            display: block;
+            object-fit: cover; /* Ensures image covers the area, good for consistency */
         }
         .popup-gallery-btn {
             transition: opacity 0.2s ease-in-out;
-            z-index: 10;
         }
         .popup-gallery-btn:disabled {
             opacity: 0.3;
@@ -69,31 +65,23 @@
         .leaflet-popup-content-wrapper {
             background-color: #EADDCF; /* Sepia */
             border-radius: 12px;
-            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
         }
         /* Custom control button styling */
         .leaflet-control-custom svg {
             color: #333;
         }
-        /* Mobile adjustments */
-        @media (max-width: 640px) {
-            #info-panel {
-                width: 90%;
-                max-width: none;
-            }
-        }
     </style>
 </head>
-<body class="overflow-hidden m-0 p-0">
+<body class="overflow-hidden">
 
     <!-- Collapsible Information Panel -->
-    <div id="info-panel" class="absolute top-0 left-0 m-4 w-[calc(100vw-80px)] sm:w-11/12 max-w-sm h-auto max-h-[95vh] bg-white p-6 rounded-lg shadow-lg flex flex-col pointer-events-auto">
-        <div class="flex-grow overflow-y-auto custom-scrollbar">
+    <div id="info-panel" class="absolute top-0 left-0 m-4 w-[calc(100vw-80px)] sm:w-11/12 max-w-sm h-auto max-h-[95vh] bg-white p-6 rounded-lg shadow-lg z-[1000] flex flex-col">
+        <div class="flex-grow overflow-y-auto">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Špaňodolinské granty</h2>
-            <p class="text-gray-700 leading-relaxed text-sm sm:text-base">Granty sú unikátne vodné zdroje na Španej Doline a v okolí. Tieto sčasti prírodne a sčasti človekom vytvorené toky prinášali pitnú a úžitkovú vodu nielen do baní, ale aj celej obci. Kvôli chýbajúcej údržbe však vysýchajú alebo sa stávajú nepitnými. Klikni na jednotlivé body na mape a dozvieš sa viac.</p>
+            <p class="text-gray-700">Granty sú unikátne vodné zdroje na Španej Doline a v okolí. Tieto sčasti prírodne a sčasti človekom vytvorené toky prinášali pitnú a úžitkovú vodu nielen do baní, ale aj celej obci. Kvôli chýbajúcej údržbe však vysýchajú alebo sa stávajú nepitnými. Klikni na jednotlivé body na mape a dozvieš sa viac.</p>
         </div>
         <!-- Toggle Button -->
-        <button id="toggle-button" class="absolute top-4 -right-12 text-gray-800 rounded-r-lg p-2 shadow-lg focus:outline-none flex items-center justify-center w-10 h-10 cursor-pointer">
+        <button id="toggle-button" class="absolute top-4 -right-12 text-gray-800 rounded-r-lg p-2 shadow-lg focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
@@ -388,16 +376,6 @@
             }
         ];
 
-        // --- IMAGE URL FIX FOR CANVAS ---
-        // Maps relative "images/" paths to the absolute GitHub Raw URL to ensure they load.
-        const repoBaseUrl = "https://raw.githubusercontent.com/rfrecer/spanodolinske-granty/a7f12e778f5ad757fae19c6ef28dc7248bb2bdc4/";
-        waterSources.forEach(source => {
-            source.imageUrls = source.imageUrls.map(url => {
-                // Split by slash, encode each part (for spaces), then join
-                return repoBaseUrl + url.split('/').map(part => encodeURIComponent(part)).join('/');
-            });
-        });
-
         // --- MAP INITIALIZATION ---
         const map = L.map('map', {
             zoomControl: false // Disable default zoom control
@@ -420,8 +398,6 @@
                 button.style.justifyContent = 'center';
                 button.title = 'Center Map';
                 button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style="width: 22px; height: 22px;"><path d="M16 4 A12 12 0 0 0 4 16 A12 12 0 0 0 16 28 A12 12 0 0 0 28 16 A12 12 0 0 0 16 4 z M 16 8 A8 8 0 0 1 24 16 A8 8 0 0 1 16 24 A8 8 0 0 1 8 16 A8 8 0 0 1 16 8 z" /><circle cx="16" cy="16" r="2"/></svg>';
-                button.style.backgroundColor = 'white';
-                button.style.cursor = 'pointer';
 
                 L.DomEvent.on(button, 'click', L.DomEvent.stop);
                 L.DomEvent.on(button, 'click', function(){
@@ -511,12 +487,7 @@
 
         // --- POPUP AND PANEL INTERACTION LOGIC ---
         map.on('popupopen', function(e) {
-            // If on mobile (small screen) and panel is open, collapse it when popup opens
-            if (window.innerWidth < 640 && !infoPanel.classList.contains('collapsed')) {
-                infoPanel.classList.add('collapsed');
-            }
-            // Original desktop collision logic
-            else if (!infoPanel.classList.contains('collapsed')) {
+            if (!infoPanel.classList.contains('collapsed')) {
                 const panelRect = infoPanel.getBoundingClientRect();
                 const popupRect = e.popup.getElement().getBoundingClientRect();
                 if (popupRect.right > panelRect.left && popupRect.left < panelRect.right) {
