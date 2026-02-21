@@ -13,7 +13,6 @@ const badgeStyles = {
 // --- 2. INJECT SITE COPY, ROUTES UI & CONTACT ---
 const siteCopyContainer = document.getElementById('site-copy');
 
-// This now correctly pulls mapRoutes ONLY from data.js
 const routesHTML = mapRoutes.map(route => `
     <div class="route-container mb-2">
         <button onclick="window.toggleRoute('${route.id}')" id="btn-route-${route.id}" class="w-full text-left px-3 py-2.5 rounded-lg border border-[#d4c4b5] bg-sepia text-ink/90 hover:bg-[#e4d4c3] hover:text-ink transition-all font-bold text-sm flex items-center justify-between shadow-sm cursor-pointer ring-inset focus:outline-none">
@@ -251,6 +250,11 @@ function turnOnRoute(routeId) {
 
     enableFocusMode(routeId);
     window.activePolyline = 'loading';
+
+    // MOBILE FIX: Instantly collapse the panel on mobile so the map is visible
+    if (window.innerWidth < 640 && !infoPanel.classList.contains('collapsed')) {
+        infoPanel.classList.add('collapsed');
+    }
 
     fetch(route.file)
         .then(response => response.text())
