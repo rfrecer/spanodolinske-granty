@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="https://mapy.com/">
+	<trk>
+		<name>Route from Šachta Ludovika to 48.813582N, 19.134500E</name>
+		<trkseg>
+			<trkpt lat="48.811842" lon="19.128025">
+				<ele>819.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811907" lon="19.128034">
+				<ele>820.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812014" lon="19.127944">
+				<ele>821.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812090" lon="19.127891">
+				<ele>824.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812167" lon="19.127854">
+				<ele>827.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812398" lon="19.127702">
+				<ele>832.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812404" lon="19.127665">
+				<ele>832.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812398" lon="19.127602">
+				<ele>833.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812375" lon="19.127459">
+				<ele>834.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812362" lon="19.127388">
+				<ele>834.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812511" lon="19.127602">
+				<ele>842.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812528" lon="19.127684">
+				<ele>843.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812511" lon="19.127989">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812528" lon="19.128241">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812593" lon="19.128474">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812564" lon="19.128654">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812469" lon="19.128753">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812315" lon="19.128797">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811854" lon="19.128879">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811599" lon="19.129067">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811576" lon="19.129094">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811576" lon="19.129094">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811386" lon="19.129346">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811191" lon="19.129812">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810949" lon="19.130244">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810807" lon="19.130441">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810706" lon="19.130585">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810641" lon="19.130747">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810641" lon="19.130891">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810712" lon="19.130981">
+				<ele>846.000000</ele>
+			</trkpt>
+			<trkpt lat="48.810854" lon="19.131025">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811049" lon="19.130971">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811339" lon="19.130837">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.811801" lon="19.130711">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812031" lon="19.130657">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812149" lon="19.130728">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812369" lon="19.130954">
+				<ele>847.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812960" lon="19.131474">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813167" lon="19.131816">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813167" lon="19.131906">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813090" lon="19.132086">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813002" lon="19.132273">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812930" lon="19.132661">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812842" lon="19.133191">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812836" lon="19.133531">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812883" lon="19.133765">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.812930" lon="19.133900">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813191" lon="19.134151">
+				<ele>848.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813516" lon="19.134430">
+				<ele>849.000000</ele>
+			</trkpt>
+			<trkpt lat="48.813587" lon="19.134493">
+				<ele>849.000000</ele>
+			</trkpt>
+		</trkseg>
+	</trk>
+</gpx>
+

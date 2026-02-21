@@ -1,8 +1,31 @@
 // Global Site Content
 const siteContent = {
     title: "Špaňodolinské granty",
-    description: "Granty sú unikátne vodné zdroje na Španej Doline a v okolí. Tieto sčasti prírodne a sčasti človekom vytvorené toky prinášali pitnú a úžitkovú vodu nielen do baní, ale aj celej obci. Kvôli chýbajúcej údržbe však vysýchajú alebo sa stávajú nepitnými. Klikni na jednotlivé body na mape a dozvieš sa viac."
+    description: "Granty sú unikátne vodné zdroje na Španej Doline a v okolí. Tieto sčasti prírodne a sčasti človekom vytvorené toky prinášali pitnú a úžitkovú vodu nielen do baní, ale aj celej obci. Kvôli chýbajúcej údržbe však vysýchajú alebo sa stávajú nepitnými. Klikni na jednotlivé body na mape alebo na jednu z trás a dozvieš sa viac.",
+    contactPrompt: "Našli ste chybu? Chcete doplniť lokálny názov alebo ďalšie informácie?",
+    contactLinkText: "Dajte mi vedieť.",
+    contactEmail: "mailto:r.frecer@gmail.com"
 };
+
+// Thematic Routes Data
+const mapRoutes = [
+    {
+        id: 'bansky-vodovod',
+        name: 'Banský vodovod',
+        color: '#2C363F', 
+        file: 'assets/bansky-vodovod.gpx',
+        description: 'Trasa kopírujúca zaniknutý banský vodovod.',
+        slugs: ["500-bansky-vodovod", "501-bansky-vodovod", "502-bansky-vodovod", "503-bansky-vodovod", "504-bansky-vodovod"]
+    },
+    {
+        id: 'obecne-granty',
+        name: 'Obecné granty',
+        color: '#007BFF',
+        file: 'assets/obecne-granty.gpx',
+        description: 'Prechádzka po stopách zachovalých obecných grantov.',
+        slugs: ["100-pod-krasnou-horou", "112-pri-daubnerovi", "101-v-stolni", "102-pri-kostole", "108-pri-krcme", "103-denna-stolna"]
+    }
+];
 
 // Map Features Data
 const waterFeatures = [
@@ -11,7 +34,7 @@ const waterFeatures = [
         lat: 48.8046413708777,
         lng: 19.12642961872907,
         name: "Grant pod Krásnou horou",
-        description: "Grant pod čerešňou na ceste na Krásnu horu. V roku 2021 ešte tiekol, ale teraz je suchý",
+        description: "Grant pod čerešňou na ceste na Krásnu horu. V roku 2021 ešte tiekol, ale v roku 2025 bol suchý.",
         type: "well",
         status: "dry",
         slug: "100-pod-krasnou-horou",
@@ -47,7 +70,7 @@ const waterFeatures = [
         lat: 48.807314215009555,
         lng: 19.13519788114444,
         name: "Denná štôlňa",
-        description: "Z dennej štôlne vychádza prameň s nejasným zdrojom. Donedávna bol pitný, ale v roku 2024 bolo spozorované presakovanie odpadovej vody z chalupy nad ním cez murivo samotnej štôlne. Neodporúča sa preto piť.",
+        description: "Z dennej štôlne vychádza prameň s nejasným zdrojom. Donedávna bol pitný, ale v roku 2024 tu presakovala odpadová voda z chalupy nad ním cez murivo samotnej štôlne. Neodporúča sa preto piť.",
         type: "well",
         status: "undrinkable",
         slug: "103-denna-stolna",
@@ -82,8 +105,8 @@ const waterFeatures = [
         id: 106,
         lat: 48.80652255728809,
         lng: 19.135416118177332,
-        name: "Grant",
-        description: "Hoci drevené koryto tohto grantu zmizlo, voda stále vyviera z kamenného povrchu svahu a tečie cez rúrku.",
+        name: "Grant zo skaly",
+        description: "Hoci drevené koryto tohto grantu zmizlo, voda stále vyviera zo svahu a tečie cez rúrku.",
         type: "well",
         status: "undrinkable",
         slug: "106-v-skale",
@@ -107,7 +130,7 @@ const waterFeatures = [
         lat: 48.80786022767957,
         lng: 19.133635514215776,
         name: "Grant pri krčme",
-        description: "Tento grant tiekol ešte v roku 2023, ale teraz je úplne suchý.",
+        description: "Tento grant tiekol ešte v roku 2023, ale v roku 2025 bol úplne suchý.",
         type: "well",
         status: "dry",
         slug: "108-pri-krcme",
@@ -179,7 +202,7 @@ const waterFeatures = [
         lat: 48.80531,
         lng: 19.13081,
         name: "Grant na Rudných baniach",
-        description: "",
+        description: "Tento grant je pravdepodobne nepitný.",
         type: "well",
         status: "undrinkable",
         slug: "114-na-rudnych-baniach",
