@@ -1,6 +1,5 @@
 // --- 1. INJECT SITE COPY ---
 const siteCopyContainer = document.getElementById('site-copy');
-// Added right padding on mobile (pr-8) so the title wraps nicely around the flush X button
 siteCopyContainer.innerHTML = `
     <h2 class="text-3xl font-bold text-ink mb-4 pr-8 sm:pr-0">${siteContent.title}</h2>
     <p class="text-ink/80 leading-relaxed text-sm sm:text-base">${siteContent.description}</p>
@@ -75,12 +74,9 @@ const mobileCloseBtn = document.getElementById('mobile-close-btn');
 function handlePanelToggle() {
     const isCurrentlyCollapsed = infoPanel.classList.contains('collapsed');
     
-    // STRICT RULE: If expanding Panel over a Popup, close the Popup. 
     if (isCurrentlyCollapsed && map._popup) {
         const panelWidth = infoPanel.offsetWidth;
         const popupRect = map._popup.getElement().getBoundingClientRect();
-        
-        // If the popup is anywhere behind the rendered panel area, kill it.
         if (popupRect.left < (panelWidth + 16)) {
             map.closePopup();
         }
@@ -91,31 +87,42 @@ function handlePanelToggle() {
 toggleButton.addEventListener('click', handlePanelToggle);
 mobileCloseBtn.addEventListener('click', handlePanelToggle);
 
-// --- 5. RENDER MARKERS & BUILD POPUPS ---
-waterFeatures.forEach((source) => {
-    if (source.lat === 0 && source.lng === 0) return;
+// --- 5. THE NEW PARADIGM: GLOBAL REGISTRY & DECLARATIVE POPUPS ---
 
-    const icon = createMarkerIcon(source.type, statusColors[source.status]);
-    const marker = L.marker([source.lat, source.lng], { icon: icon }).addTo(map);
+// We store the exact state of every single marker in a global dictionary
+window.siteRegistry = {};
 
-    const images = [];
-    for(let i = 1; i <= source.imageCount; i++) {
-        images.push(`assets/${source.slug}-${i}.jpg`);
-    }
-    marker.featureData = { ...source, images };
+// This global function intercepts the native click, changes the state, and instantly redraws the popup
+window.flipGallery = function(slug, direction) {
+    const site = window.siteRegistry[slug];
+    site.currentIndex += direction;
+    site.marker.getPopup().setContent(getPopupHTML(slug));
+};
 
-    const popupContent = `
+// This function generates the fresh HTML string based purely on the current state
+function getPopupHTML(slug) {
+    const site = window.siteRegistry[slug];
+    const source = site.source;
+    const currentImg = site.images[site.currentIndex];
+    
+    const isFirst = site.currentIndex === 0;
+    const isLast = site.currentIndex === site.images.length - 1;
+    const showArrows = site.images.length > 1;
+
+    return `
         <div class="flex flex-col w-full h-full bg-sepia p-4 rounded-xl box-border">
             
-            <div id="gallery-${source.id}" class="relative group w-full mb-4">
-                <img src="${images[0]}" alt="Fotka 1 z ${source.name}" width="238" height="238" class="site-image w-full aspect-square object-cover block m-0 rounded-lg shadow-sm border border-[#d4c4b5]">
+            <div id="gallery-${source.id}" class="relative w-full mb-4">
+                <img src="${currentImg}" alt="Fotka ${site.currentIndex + 1} z ${source.name}" width="238" height="238" class="site-image w-full aspect-square object-cover block m-0 rounded-lg shadow-sm border border-[#d4c4b5]">
                 
-                <button class="prev-image-btn absolute left-2 top-1/2 transform -translate-y-1/2 bg-ink/70 hover:bg-ink text-sepia rounded p-1 hidden group-hover:block disabled:opacity-0 transition-opacity focus:outline-none backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <button class="next-image-btn absolute right-2 top-1/2 transform -translate-y-1/2 bg-ink/70 hover:bg-ink text-sepia rounded p-1 hidden group-hover:block disabled:opacity-0 transition-opacity focus:outline-none backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
+                ${showArrows ? `
+                    <button type="button" onclick="event.stopPropagation(); window.flipGallery('${slug}', -1);" ${isFirst ? 'disabled' : ''} class="absolute z-50 left-1 top-1/2 transform -translate-y-1/2 text-white/80 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed drop-shadow-md transition-colors focus:outline-none p-2 cursor-pointer">
+                        <svg class="pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <button type="button" onclick="event.stopPropagation(); window.flipGallery('${slug}', 1);" ${isLast ? 'disabled' : ''} class="absolute z-50 right-1 top-1/2 transform -translate-y-1/2 text-white/80 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed drop-shadow-md transition-colors focus:outline-none p-2 cursor-pointer">
+                        <svg class="pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                ` : ''}
             </div>
             
             <div class="w-full">
@@ -130,20 +137,38 @@ waterFeatures.forEach((source) => {
             </div>
         </div>
     `;
+}
+
+// --- 6. RENDER MARKERS ---
+waterFeatures.forEach((source) => {
+    if (source.lat === 0 && source.lng === 0) return;
+
+    const icon = createMarkerIcon(source.type, statusColors[source.status]);
+    const marker = L.marker([source.lat, source.lng], { icon: icon }).addTo(map);
+
+    const images = [];
+    for(let i = 1; i <= source.imageCount; i++) {
+        images.push(`assets/${source.slug}-${i}.jpg`);
+    }
+
+    // Register this marker's state globally
+    window.siteRegistry[source.slug] = {
+        source: source,
+        images: images,
+        currentIndex: 0,
+        marker: marker
+    };
     
-    marker.bindPopup(popupContent, { autoPanPadding: L.point(40, 40), closeButton: false });
+    // Bind the popup to dynamically call our HTML generator function
+    marker.bindPopup(() => getPopupHTML(source.slug), { autoPanPadding: L.point(40, 40), closeButton: false });
 });
 
-// --- 6. POPUP INTERACTION LOGIC ---
+// --- 7. POPUP INTERACTION LOGIC ---
 map.on('popupopen', function(e) {
-    
-    // THE FIX: Tell Leaflet to recalculate the size *after* the custom fonts and text wrapping have fully rendered.
-    // This perfectly solves the "first click doesn't auto-pan completely" bug.
-    setTimeout(() => {
-        e.popup.update();
-    }, 50);
+    // Force Leaflet to recalculate the size after the font renders
+    setTimeout(() => { e.popup.update(); }, 50);
 
-    // STRICT RULE: If expanding Popup over Panel, close the Panel entirely.
+    // Collision logic: If expanding Popup over Panel, close the Panel entirely.
     if (window.innerWidth < 640 && !infoPanel.classList.contains('collapsed')) {
         infoPanel.classList.add('collapsed');
     } else if (!infoPanel.classList.contains('collapsed')) {
@@ -153,45 +178,11 @@ map.on('popupopen', function(e) {
              infoPanel.classList.add('collapsed');
         }
     }
+});
 
-    const popupNode = e.popup.getElement();
-    const featureData = e.popup._source.featureData; 
-    
-    if (!featureData) return;
-
-    let currentIndex = 0;
-    const imgElement = popupNode.querySelector('.site-image');
-    const prevButton = popupNode.querySelector('.prev-image-btn');
-    const nextButton = popupNode.querySelector('.next-image-btn');
-
-    if (featureData.images.length <= 1) {
-        if (prevButton) prevButton.style.display = 'none';
-        if (nextButton) nextButton.style.display = 'none';
-    }
-
-    function updateGalleryView() {
-        imgElement.src = featureData.images[currentIndex];
-        imgElement.alt = `Fotka ${currentIndex + 1} z ${featureData.name}`;
-
-        if (featureData.images.length > 1) {
-            prevButton.disabled = currentIndex === 0;
-            nextButton.disabled = currentIndex === featureData.images.length - 1;
-            prevButton.style.display = 'block';
-            nextButton.style.display = 'block';
-        }
-    }
-
-    if (prevButton) {
-        prevButton.addEventListener('click', (ev) => {
-            ev.stopPropagation();
-            if (currentIndex > 0) { currentIndex--; updateGalleryView(); }
-        });
-    }
-
-    if (nextButton) {
-        nextButton.addEventListener('click', (ev) => {
-            ev.stopPropagation();
-            if (currentIndex < featureData.images.length - 1) { currentIndex++; updateGalleryView(); }
-        });
+// Reset the gallery to image 1 whenever a popup is closed
+map.on('popupclose', function(e) {
+    for (const slug in window.siteRegistry) {
+        window.siteRegistry[slug].currentIndex = 0;
     }
 });
