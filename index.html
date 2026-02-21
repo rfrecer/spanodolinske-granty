@@ -16,7 +16,6 @@
                     colors: {
                         sepia: '#EADDCF',
                         ink: '#2C363F',
-                        /* Synced exact marker colors to Tailwind for the tags */
                         drinkable: '#007BFF',
                         undrinkable: '#28A745',
                         dry: '#A0522D'
@@ -38,29 +37,25 @@
         body { font-family: 'Lora', serif; background-color: #EADDCF; }
         #map { width: 100vw; height: 100vh; z-index: 10; }
         
-        /* The Canvas: Back to the original, lightweight filter to kill the lag */
-        .leaflet-tile-pane { 
-            filter: grayscale(100%) opacity(85%); 
-        }
+        .leaflet-tile-pane { filter: grayscale(100%) opacity(85%); }
         
+        /* --- Panel Physics --- */
         #info-panel { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
-        #info-panel.collapsed { transform: translateX(-100%); }
+        #info-panel.collapsed { transform: translateX(calc(-100% - 1rem)); }
+        
         #toggle-button { transition: transform 0.3s ease-in-out; pointer-events: auto; }
-        #info-panel.collapsed #toggle-button { transform: translateX(calc(100% + 1rem)) rotate(180deg); }
+        #info-panel.collapsed #toggle-button { transform: rotate(180deg); }
         
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #d4c4b5; border-radius: 10px; }
 
-        /* Forcing Lora to override Leaflet */
-        .leaflet-container,
-        .leaflet-popup-content-wrapper, 
-        .leaflet-popup-content, 
-        .leaflet-popup-tip {
+        .leaflet-container, .leaflet-popup-content-wrapper, .leaflet-popup-content, .leaflet-popup-tip {
             font-family: 'Lora', serif !important;
         }
 
-        /* Beautiful rounded corners restored */
+        .leaflet-popup-content p { margin: 0 !important; }
+
         .leaflet-popup-content-wrapper {
             background-color: #EADDCF !important;
             padding: 0 !important;
@@ -71,18 +66,27 @@
         
         .leaflet-popup-content { margin: 0 !important; width: 270px !important; }
         .leaflet-popup-tip { background-color: #EADDCF !important; }
-        
-        /* Hide the Leaflet close button completely */
         .leaflet-popup-close-button { display: none !important; }
 
-        @media (max-width: 640px) { #info-panel { width: 90%; max-width: none; } }
+        @media (max-width: 640px) { 
+            #info-panel { width: 90%; max-width: none; } 
+            #info-panel:not(.collapsed) #toggle-button { display: none !important; }
+        }
     </style>
 </head>
 <body class="overflow-hidden m-0 p-0 text-ink">
 
     <div id="info-panel" class="absolute top-0 left-0 m-4 w-[calc(100vw-80px)] sm:w-11/12 max-w-sm h-auto max-h-[95vh] bg-sepia p-6 rounded-lg shadow-2xl flex flex-col pointer-events-auto border border-[#d4c4b5]">
+        
+        <button id="mobile-close-btn" class="sm:hidden absolute top-6 right-6 text-ink hover:text-ink/70 z-10 p-0 focus:outline-none cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
         <div id="site-copy" class="flex-grow overflow-y-auto custom-scrollbar pr-2"></div>
-        <button id="toggle-button" class="absolute top-4 -right-12 bg-sepia text-ink rounded-r-lg p-2 shadow-xl border-y border-r border-[#d4c4b5] focus:outline-none flex items-center justify-center w-10 h-10 cursor-pointer hover:bg-[#e4d4c3] transition-colors">
+        
+        <button id="toggle-button" class="absolute top-4 -right-12 w-10 h-10 bg-sepia text-ink rounded-lg p-2 shadow-xl border border-[#d4c4b5] focus:outline-none flex items-center justify-center cursor-pointer hover:bg-[#e4d4c3] transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

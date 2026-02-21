@@ -1,7 +1,8 @@
 // --- 1. INJECT SITE COPY ---
 const siteCopyContainer = document.getElementById('site-copy');
+// Added right padding on mobile (pr-8) so the title wraps nicely around the flush X button
 siteCopyContainer.innerHTML = `
-    <h2 class="text-3xl font-bold text-ink mb-4">${siteContent.title}</h2>
+    <h2 class="text-3xl font-bold text-ink mb-4 pr-8 sm:pr-0">${siteContent.title}</h2>
     <p class="text-ink/80 leading-relaxed text-sm sm:text-base">${siteContent.description}</p>
 `;
 
@@ -39,19 +40,14 @@ L.tileLayer('https://outdoor.tiles.freemap.sk/{z}/{x}/{y}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, Style &copy; <a href="https://www.freemap.sk">Freemap Slovakia</a>'
 }).addTo(map);
 
-// --- 3. ORIGINAL FAST MARKERS WITH ORIGINAL PALETTE ---
-const statusColors = { 
-    drinkable: '#007BFF', 
-    undrinkable: '#28A745', 
-    dry: '#A0522D' 
-};
+// --- 3. MARKERS ---
+const statusColors = { drinkable: '#007BFF', undrinkable: '#28A745', dry: '#A0522D' };
 
 function createMarkerIcon(shape, color) {
     const shapes = {
         well: 'M4 20 C4 30, 28 30, 28 20 Z',
         stream: 'M6 13 C 10 9, 14 17, 16 13 C 20 9, 22 17, 26 13 L26 19 C 22 23, 20 15, 16 19 C 14 23, 10 15, 6 19 Z'
     };
-    
     const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="marker"><path fill-opacity="0.95" stroke="#2C363F" stroke-width="1.5" stroke-opacity="0.9" fill="${color}" d="${shapes[shape]}"/></svg>`;
     const anchor = shape === 'well' ? [16, 30] : [16, 32];
     
@@ -71,26 +67,29 @@ const badgeStyles = {
     dry: 'text-dry border-dry bg-dry/10'
 };
 
-// --- 4. PANEL COLLISION LOGIC ---
+// --- 4. PANEL UI & STRICT COLLISION LOGIC ---
 const infoPanel = document.getElementById('info-panel');
 const toggleButton = document.getElementById('toggle-button');
+const mobileCloseBtn = document.getElementById('mobile-close-btn');
 
-toggleButton.addEventListener('click', () => {
+function handlePanelToggle() {
     const isCurrentlyCollapsed = infoPanel.classList.contains('collapsed');
-    infoPanel.classList.toggle('collapsed');
-
+    
+    // STRICT RULE: If expanding Panel over a Popup, close the Popup. 
     if (isCurrentlyCollapsed && map._popup) {
-        setTimeout(() => {
-            const panelRect = infoPanel.getBoundingClientRect();
-            const popupRect = map._popup.getElement().getBoundingClientRect();
-            
-            if (popupRect.left < panelRect.right && popupRect.right > panelRect.left) {
-                const overlapPixels = panelRect.right - popupRect.left + 30; 
-                map.panBy([-overlapPixels, 0], { animate: true, duration: 0.4 });
-            }
-        }, 300);
+        const panelWidth = infoPanel.offsetWidth;
+        const popupRect = map._popup.getElement().getBoundingClientRect();
+        
+        // If the popup is anywhere behind the rendered panel area, kill it.
+        if (popupRect.left < (panelWidth + 16)) {
+            map.closePopup();
+        }
     }
-});
+    infoPanel.classList.toggle('collapsed');
+}
+
+toggleButton.addEventListener('click', handlePanelToggle);
+mobileCloseBtn.addEventListener('click', handlePanelToggle);
 
 // --- 5. RENDER MARKERS & BUILD POPUPS ---
 waterFeatures.forEach((source) => {
@@ -105,12 +104,11 @@ waterFeatures.forEach((source) => {
     }
     marker.featureData = { ...source, images };
 
-    // THE NEW POPUP: p-4 uniformly applied to the outer edge, no extra margins/paddings breaking the alignment
     const popupContent = `
         <div class="flex flex-col w-full h-full bg-sepia p-4 rounded-xl box-border">
             
             <div id="gallery-${source.id}" class="relative group w-full mb-4">
-                <img src="${images[0]}" alt="Fotka 1 z ${source.name}" class="site-image w-full aspect-square object-cover block m-0 rounded-lg shadow-sm border border-[#d4c4b5]">
+                <img src="${images[0]}" alt="Fotka 1 z ${source.name}" width="238" height="238" class="site-image w-full aspect-square object-cover block m-0 rounded-lg shadow-sm border border-[#d4c4b5]">
                 
                 <button class="prev-image-btn absolute left-2 top-1/2 transform -translate-y-1/2 bg-ink/70 hover:bg-ink text-sepia rounded p-1 hidden group-hover:block disabled:opacity-0 transition-opacity focus:outline-none backdrop-blur-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -138,6 +136,14 @@ waterFeatures.forEach((source) => {
 
 // --- 6. POPUP INTERACTION LOGIC ---
 map.on('popupopen', function(e) {
+    
+    // THE FIX: Tell Leaflet to recalculate the size *after* the custom fonts and text wrapping have fully rendered.
+    // This perfectly solves the "first click doesn't auto-pan completely" bug.
+    setTimeout(() => {
+        e.popup.update();
+    }, 50);
+
+    // STRICT RULE: If expanding Popup over Panel, close the Panel entirely.
     if (window.innerWidth < 640 && !infoPanel.classList.contains('collapsed')) {
         infoPanel.classList.add('collapsed');
     } else if (!infoPanel.classList.contains('collapsed')) {
